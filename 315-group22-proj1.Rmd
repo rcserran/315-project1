@@ -5,6 +5,8 @@ date: "11/9/2018"
 output: html_document
 ---
 
+# Reading in data
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 library(tidyverse)
 
@@ -25,7 +27,11 @@ no.na <- function(df, cols) {
   }
   return(result)
 }
+```
 
+# Boxplot of rating by cabin, facetted by airline
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 # boxplot
 airline.box <- no.na(airline, c("cabin_flown", "overall_rating", "airline_name"))
 top.airlines <- names(sort(table(airline$airline_name), decreasing = TRUE)[1:5])
@@ -49,6 +55,7 @@ Some airlines have better ratings on average than others across all cabin types.
 
 Spirit Airlines appears to be somewhat of an outlier among the popular airlines. Its ratings are extremely right-skew for all cabin types except for First Class.
 
+# Scatterplot of review length versus sum of sub-ratings colored by cabin with airline point shapes
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # scatterplot
