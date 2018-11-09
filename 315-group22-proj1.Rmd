@@ -5,6 +5,10 @@ date: "11/9/2018"
 output: html_document
 ---
 
+# Introduction
+
+Our dataset contains information about 41396 Skytrax reviews. Each record includes a reviewer ID; the reviewer country; the date of the review; the airline; the cabin flown; an overall rating; and several sub-ratings for specific aspects of the reviewer’s experience, such as cabin staff, seat comfort, and in-flight entertainment, etc.
+
 # Reading in data
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
