@@ -9,10 +9,10 @@ output: html_document
 library(tidyverse)
 
 # theme
-rcserran_315_theme <- theme_bw() +
-  theme(axis.text = element_text(size = 12, color = "blue"),
+project1_theme <- theme_bw() +
+  theme(axis.text = element_text(size = 12, color = "black"),
         rect = element_rect(color = "blue"),
-        text = element_text(size = 14, color = "blue"),
+        text = element_text(size = 14, color = "black"),
         panel.background = element_rect(fill = "white"))
 
 # read in data
@@ -39,7 +39,7 @@ ggplot(data = airline.box, aes(x = cabin_flown, y = overall_rating)) +
     y = "Overall Rating"
   ) +
   facet_grid(~ airline_name, margin = TRUE) +
-  rcserran_315_theme +
+  project1_theme +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
@@ -80,7 +80,7 @@ ggplot(data = airline.scatter, aes(x = rating_sum,
     caption = paste("Sub ratings: seat comfort, cabin staff,\nfood and beverages,",
                     "inflight entertainment,\nground service, wifi connectivity, value money")
   ) +
-  rcserran_315_theme
+  project1_theme
 ```
 
 Most reviews are under 1000 characters long. The sum of sub-ratings appears to have a bimodal distribution with a mode near 0 and another mode above 30.
