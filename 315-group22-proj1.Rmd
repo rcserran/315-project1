@@ -1,0 +1,90 @@
+---
+title: '36-315: Project 1 Graphics'
+author: "Raphael Serrano"
+date: "11/9/2018"
+output: html_document
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+
+# theme
+rcserran_315_theme <- theme_bw() +
+  theme(axis.text = element_text(size = 12, color = "blue"),
+        rect = element_rect(color = "blue"),
+        text = element_text(size = 14, color = "blue"),
+        panel.background = element_rect(fill = "white"))
+
+# read in data
+airline <- read_csv("~/Documents/School/Graphics315/airline.csv")
+
+no.na <- function(df, cols) {
+  result <- df
+  for(col in cols) {
+    result <- (result[!is.na(result[, col]),])
+  }
+  return(result)
+}
+
+# boxplot
+airline.box <- no.na(airline, c("cabin_flown", "overall_rating", "airline_name"))
+top.airlines <- names(sort(table(airline$airline_name), decreasing = TRUE)[1:5])
+airline.box$airline_name <- ifelse(airline.box$airline_name %in% top.airlines,
+                                   airline.box$airline_name, "other")
+ggplot(data = airline.box, aes(x = cabin_flown, y = overall_rating)) +
+  geom_boxplot() +
+  labs(
+    title = "Overall Rating by Cabin and Airline",
+    x = "Cabin Flown",
+    y = "Overall Rating"
+  ) +
+  facet_grid(~ airline_name, margin = TRUE) +
+  rcserran_315_theme +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Overall, it seems as though the overall rating changes somewhat with cabin type across all airlines. As expected, the median is slightly higher for Business Class and First Class than in Economy and Premium Economy, and the first quartile is lowest for Economy.
+
+Some airlines have better ratings on average than others across all cabin types. For instance, British Airways and Jet Airways tend to be rated higher than Air Canada Rouge and United Airlines for all four cabin types.
+
+Spirit Airlines appears to be somewhat of an outlier among the popular airlines. Its ratings are extremely right-skew for all cabin types except for First Class.
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# scatterplot
+airline.scatter <- no.na(airline, c("author_country",
+                                    "cabin_flown", "airline_name",
+                                    "content"))
+airline.scatter$airline_name <- ifelse(airline.scatter$airline_name %in% top.airlines,
+                                   airline.scatter$airline_name, "other")
+airline.scatter$review_length <- nchar(airline.scatter$content)
+airline.scatter$rating_sum <- airline.scatter$seat_comfort_rating +
+  airline.scatter$cabin_staff_rating +
+  airline.scatter$food_beverages_rating +
+  airline.scatter$inflight_entertainment_rating +
+  airline.scatter$ground_service_rating +
+  airline.scatter$wifi_connectivity_rating +
+  airline.scatter$value_money_rating
+airline.scatter <- no.na(airline.scatter, "rating_sum")
+ggplot(data = airline.scatter, aes(x = rating_sum,
+                                   y = review_length,
+                                   color = cabin_flown)) +
+  geom_point(aes(shape = airline_name)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Review Length versus Sum of Sub-Ratings",
+    y = "Review Length (characters)",
+    x = "Sum of Sub-Ratings",
+    color = "Cabin Flown",
+    shape = "Airline",
+    caption = paste("Sub ratings: seat comfort, cabin staff,\nfood and beverages,",
+                    "inflight entertainment,\nground service, wifi connectivity, value money")
+  ) +
+  rcserran_315_theme
+```
+
+Most reviews are under 1000 characters long. The sum of sub-ratings appears to have a bimodal distribution with a mode near 0 and another mode above 30.
+
+For most cabin types, there appears to be a negative linear relationship between review length and sum of sub-ratings. However, this relationship seems to be a positive one for passengers flying in Premium Economy.
+
+The relationships and the marginal distributions of review length and sum of sub-ratings do not appear to depend on the airline.
