@@ -91,7 +91,8 @@ ggplot(data = airline.scatter, aes(x = rating_sum,
     caption = paste("Sub ratings: seat comfort, cabin staff,\nfood and beverages,",
                     "inflight entertainment,\nground service, wifi connectivity, value money")
   ) +
-  project1_theme
+  project1_theme +
+  scale_color_manual(values = c("blue", "red", "plum", "gold"))
 ```
 
 Most reviews are under 1000 characters long. The sum of sub-ratings appears to have a bimodal distribution with a mode near 0 and another mode above 30.
