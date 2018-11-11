@@ -7,7 +7,7 @@ output: html_document
 
 # Introduction
 
-Our dataset contains information about 41396 Skytrax reviews. Each record includes a reviewer ID; the reviewer country; the date of the review; the airline; the cabin flown; an overall rating; and several sub-ratings for specific aspects of the reviewer’s experience, such as cabin staff, seat comfort, and in-flight entertainment, etc.
+Our dataset contains information about 41396 Skytrax reviews. Each record includes a reviewer ID; the reviewer country; the date of the review; the airline; the cabin flown; an overall rating; and several sub-ratings for specific aspects of the reviewer's experience, such as cabin staff, seat comfort, and in-flight entertainment, etc.
 
 # Reading in data
 
@@ -22,7 +22,7 @@ project1_theme <- theme_bw() +
         panel.background = element_rect(fill = "white"))
 
 # read in data
-airline <- read_csv("~/Documents/School/Graphics315/airline.csv")
+airline <- read_csv("airline.csv")
 
 no.na <- function(df, cols) {
   result <- df
@@ -83,7 +83,7 @@ ggplot(data = airline.scatter, aes(x = rating_sum,
   geom_point(aes(shape = airline_name)) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(
-    title = "Review Length versus Sum of Sub-Ratings",
+    title = "Review Length vs Sum of Sub-Ratings",
     y = "Review Length (characters)",
     x = "Sum of Sub-Ratings",
     color = "Cabin Flown",
@@ -99,3 +99,46 @@ Most reviews are under 1000 characters long. The sum of sub-ratings appears to h
 For most cabin types, there appears to be a negative linear relationship between review length and sum of sub-ratings. However, this relationship seems to be a positive one for passengers flying in Premium Economy.
 
 The relationships and the marginal distributions of review length and sum of sub-ratings do not appear to depend on the airline.
+
+# Bar chart of counts for each airline colored by continent of reviewer
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(countrycode)
+top10.airlines <- names(sort(table(airline$airline_name), decreasing = TRUE)[1:10])
+airline.bar <- no.na(airline, c("author_country",
+                                "airline_name"))
+airline.bar$continent <- factor(countrycode(sourcevar = airline.bar[["author_country"]],
+                                   origin = "country.name",
+                                   destination = "continent"))
+# region has lots of categories, would be hard to see on a poster
+airline.bar$region <- factor(countrycode(sourcevar = airline.bar[["author_country"]],
+                                   origin = "country.name",
+                                   destination = "region"))
+airline.bar <- airline.bar[airline.bar$airline_name %in% top10.airlines, ]
+
+ggplot(airline.bar, aes(x = airline_name, fill = continent)) +
+  geom_bar() +
+  labs(title = "Airline review counts by author continent",
+       x = "Airline") +
+  project1_theme +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
