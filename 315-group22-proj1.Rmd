@@ -104,7 +104,7 @@ The relationships and the marginal distributions of review length and sum of sub
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(countrycode)
-top10.airlines <- names(sort(table(airline$airline_name), decreasing = TRUE)[1:10])
+top15.airlines <- names(sort(table(airline$airline_name), decreasing = TRUE)[1:15])
 airline.bar <- no.na(airline, c("author_country",
                                 "airline_name"))
 airline.bar$continent <- factor(countrycode(sourcevar = airline.bar[["author_country"]],
@@ -114,31 +114,70 @@ airline.bar$continent <- factor(countrycode(sourcevar = airline.bar[["author_cou
 airline.bar$region <- factor(countrycode(sourcevar = airline.bar[["author_country"]],
                                    origin = "country.name",
                                    destination = "region"))
-airline.bar <- airline.bar[airline.bar$airline_name %in% top10.airlines, ]
+airline.bar <- airline.bar[airline.bar$airline_name %in% top15.airlines, ]
 
 ggplot(airline.bar, aes(x = airline_name, fill = continent)) +
   geom_bar() +
-  labs(title = "Airline review counts by author continent",
+  labs(title = "Top 15 airline review counts by author continent",
        x = "Airline") +
   project1_theme +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+This is a stacked bar chart of review counts for the top 15 reviewed airlines by reviewer continent. The Americas and Europe are the most common reviewer continent. Africa is the least common with the most occurrences in Qatar Airways. Theis is followed by Asia which has a small presence in almost all airways. Oceania is similar except for being the large majority in Quantas airways.
 
+# Word cloud of top words in Airline Reviews
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(wordcloud)
+library(tm)
+#library(ggrepel)
 
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 
+airline.cloud <- no.na(airline, c("content"))
 
+# create corpus so we can interface with tm
+docs <- Corpus(VectorSource(airline.cloud$content))
 
+# clean the text
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "\\|")
+docs <- tm_map(docs, content_transformer(tolower))
+docs <- tm_map(docs, removeNumbers)
+docs <- tm_map(docs, removeWords, stopwords("english"))
+docs <- tm_map(docs, removePunctuation)
+docs <- tm_map(docs, stripWhitespace)
 
+df <- data.frame(text = sapply(docs, as.character), stringsAsFactors = FALSE)
 
+airline.reviews.words <- strsplit(paste(df$text, collapse = " "), " ")
+airline.reviews.df <- as.data.frame(table(airline.reviews.words))
+airline.reviews.df <- airline.reviews.df[order(-airline.reviews.df$Freq), ]
 
+set.seed(36315)
 
+layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
+par(mar=rep(0, 4))
+plot.new()
+text(x=0.5, y=0.5, "Airline review common words")
+wordcloud(words = airline.reviews.df$airline.reviews.words,
+          freq = airline.reviews.df$Freq,
+          min.freq = 1,
+          max.words = 200,
+          random.order = FALSE,
+          rot.per = 0.35, 
+          colors = brewer.pal(8, "Dark2"))
 
+#ggplot(airline.reviews.df[1:100, ]) +
+#  aes(x = 1, y = 1, size = Freq, label = airline.reviews.words) +
+#  geom_text_repel(segment.size = 0, force = 100) +
+#  scale_size(range = c(2, 15), guide = FALSE) +
+#  scale_y_continuous(breaks = NULL) +
+#  scale_x_continuous(breaks = NULL) +
+#  labs(x = '', y = '') +
+#  project1_theme
+```
 
-
-
-
-
-
-
+After cleaning, it is no surprise that flight is the most common word. This is followed by service, time, food, and seats. In that tier lies the word "good". This is indicative of a positive sentiment. This could be the result of self-report bias due to a positive experience. Expected words are also common such as cabin, seat, class, airline, economy, staff, flew, and airport.
