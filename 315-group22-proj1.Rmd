@@ -21,6 +21,9 @@ project1_theme <- theme_bw() +
         text = element_text(size = 14, color = "black"),
         panel.background = element_rect(fill = "white"))
 
+# palette
+pal <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
 # read in data
 airline <- read_csv("airline.csv")
 
@@ -42,7 +45,7 @@ top.airlines <- names(sort(table(airline$airline_name), decreasing = TRUE)[1:5])
 airline.box$airline_name <- ifelse(airline.box$airline_name %in% top.airlines,
                                    airline.box$airline_name, "other")
 ggplot(data = airline.box, aes(x = cabin_flown, y = overall_rating)) +
-  geom_boxplot() +
+  geom_boxplot(aes(fill = cabin_flown)) +
   labs(
     title = "Overall Rating by Cabin and Airline",
     x = "Cabin Flown",
@@ -50,6 +53,7 @@ ggplot(data = airline.box, aes(x = cabin_flown, y = overall_rating)) +
   ) +
   facet_grid(~ airline_name, margin = TRUE) +
   project1_theme +
+  scale_fill_manual(values = pal) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
@@ -80,7 +84,7 @@ ggplot(data = airline.scatter, aes(x = rating_sum,
                                    y = review_length,
                                    color = cabin_flown)) +
   geom_point(aes(shape = airline_name)) +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = TRUE) +
   labs(
     title = "Review Length vs Sum of Sub-Ratings",
     y = "Review Length (characters)",
@@ -91,12 +95,12 @@ ggplot(data = airline.scatter, aes(x = rating_sum,
                     "inflight entertainment,\nground service, wifi connectivity, value money")
   ) +
   project1_theme +
-  scale_color_manual(values = c("blue", "red", "plum", "gold"))
+  scale_color_manual(values = pal[-1])
 ```
 
 Most reviews are under 1000 characters long. The sum of sub-ratings appears to have a bimodal distribution with a mode near 0 and another mode above 30.
 
-For most cabin types, there appears to be a negative linear relationship between review length and sum of sub-ratings. However, this relationship seems to be a positive one for passengers flying in Premium Economy.
+For most cabin types, there appears to be a negative linear relationship between review length and sum of sub-ratings. However, this relationship seems to be a positive one for passengers flying in Premium Economy. With that said, the difference is not statistically significant.
 
 The relationships and the marginal distributions of review length and sum of sub-ratings do not appear to depend on the airline.
 
@@ -121,7 +125,8 @@ ggplot(airline.bar, aes(x = airline_name, fill = continent)) +
   labs(title = "Top 15 airline review counts by author continent",
        x = "Airline") +
   project1_theme +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = pal)
 ```
 
 This is a stacked bar chart of review counts for the top 15 reviewed airlines by reviewer continent. The Americas and Europe are the most common reviewer continent. Africa is the least common with the most occurrences in Qatar Airways. Theis is followed by Asia which has a small presence in almost all airways. Oceania is similar except for being the large majority in Quantas airways.
