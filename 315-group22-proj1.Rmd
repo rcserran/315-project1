@@ -63,8 +63,7 @@ Spirit Airlines appears to be somewhat of an outlier among the popular airlines.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # scatterplot
-airline.scatter <- no.na(airline, c("author_country",
-                                    "cabin_flown", "airline_name",
+airline.scatter <- no.na(airline, c("cabin_flown", "airline_name",
                                     "content"))
 airline.scatter$airline_name <- ifelse(airline.scatter$airline_name %in% top.airlines,
                                    airline.scatter$airline_name, "other")
