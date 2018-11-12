@@ -173,8 +173,8 @@ wordcloud(words = airline.reviews.df$airline.reviews.words,
           max.words = 200,
           random.order = FALSE,
           rot.per = 0.35, 
-          colors = brewer.pal(8, "Dark2"))
-
+          colors = pal)
+#brewer.pal(8, "Dark2")
 #ggplot(airline.reviews.df[1:100, ]) +
 #  aes(x = 1, y = 1, size = Freq, label = airline.reviews.words) +
 #  geom_text_repel(segment.size = 0, force = 100) +
