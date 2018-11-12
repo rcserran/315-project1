@@ -49,7 +49,8 @@ ggplot(data = airline.box, aes(x = cabin_flown, y = overall_rating)) +
   labs(
     title = "Overall Rating by Cabin and Airline",
     x = "Cabin Flown",
-    y = "Overall Rating"
+    y = "Overall Rating",
+    fill = "Cabin Flown"
   ) +
   facet_grid(~ airline_name, margin = TRUE) +
   project1_theme +
