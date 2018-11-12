@@ -129,7 +129,7 @@ ggplot(airline.bar, aes(x = airline_name, fill = continent)) +
   scale_fill_manual(values = pal)
 ```
 
-This is a stacked bar chart of review counts for the top 15 reviewed airlines by reviewer continent. The Americas and Europe are the most common reviewer continent. Africa is the least common with the most occurrences in Qatar Airways. Theis is followed by Asia which has a small presence in almost all airways. Oceania is similar except for being the large majority in Quantas airways.
+This is a stacked bar chart of review counts for the top 15 reviewed airlines by reviewer continent. The Americas and Europe are the most common reviewer continent. Africa is the least common with the most occurrences in Qatar Airways. This is followed by Asia which has a small presence in almost all airways. Oceania is similar except for being the large majority in Quantas airways.
 
 # Word cloud of top words in Airline Reviews
 
@@ -172,7 +172,7 @@ wordcloud(words = airline.reviews.df$airline.reviews.words,
           min.freq = 1,
           max.words = 200,
           random.order = FALSE,
-          rot.per = 0.35, 
+          rot.per = 0.36, 
           colors = pal)
 #brewer.pal(8, "Dark2")
 #ggplot(airline.reviews.df[1:100, ]) +
